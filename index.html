@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#1b2a4a" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <title>WIN Apoio — PEX</title>
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="icon" href="./icon.svg" />
+  <style>
+    :root {
+      --bg: #0f1720; --card: #182230; --line: #2a3b50; --text: #e8eef6;
+      --muted: #8aa0b8; --accent: #f4d35e; --up: #3dd68c; --down: #ff6b7a;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; font-family: system-ui, Segoe UI, Roboto, Arial, sans-serif;
+      background: var(--bg); color: var(--text); padding: 12px 12px 88px;
+    }
+    h1 { font-size: 1.1rem; margin: 0 0 2px; }
+    .sub { color: var(--muted); font-size: .75rem; margin: 0 0 12px; }
+    .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 12px; margin-bottom: 10px; }
+    .sec { font-size: .7rem; letter-spacing: .08em; color: var(--accent); font-weight: 700; margin-bottom: 8px; }
+    label { display: block; font-size: .76rem; color: var(--muted); margin: 8px 0 4px; }
+    input, select, textarea {
+      width: 100%; background: #101820; color: var(--text);
+      border: 1px solid var(--line); border-radius: 8px; padding: 10px; font-size: 16px;
+    }
+    textarea { min-height: 72px; }
+    .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .kpi { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
+    .kpi div, .stat {
+      background: #101820; border-radius: 8px; padding: 8px; font-size: .75rem; color: var(--muted);
+    }
+    .kpi strong, .stat b { display: block; color: var(--text); font-size: 1rem; }
+    .hypo { text-align: center; padding: 14px 8px; border-radius: 12px; border: 1px solid var(--accent); background: #1c2838; }
+    .hypo b { display: block; font-size: 1.05rem; color: var(--accent); margin-bottom: 4px; }
+    button.primary, button.ghost {
+      width: 100%; border: 0; border-radius: 10px; padding: 12px; font-weight: 700; font-size: 15px; margin-top: 8px;
+    }
+    button.primary { background: var(--accent); color: #1a1400; }
+    button.ghost { background: #101820; color: var(--text); border: 1px solid var(--line); }
+    button.danger { background: #3a1820; color: var(--down); border: 1px solid #633; width: auto; padding: 6px 10px; font-size: 12px; margin: 0; }
+    .score { display: flex; gap: 4px; }
+    .score button {
+      flex: 1; background: #101820; color: var(--muted); border: 1px solid var(--line);
+      border-radius: 8px; padding: 8px 0; font-size: 13px;
+    }
+    .score button.on-plus { background: #163226; color: var(--up); border-color: #2a6; }
+    .score button.on-minus { background: #32161c; color: var(--down); border-color: #a35; }
+    .score button.on-zero { background: #2a2a20; color: var(--accent); }
+    .nav {
+      position: fixed; left: 0; right: 0; bottom: 0; display: grid; grid-template-columns: repeat(4, 1fr);
+      background: #121c28; border-top: 1px solid var(--line); padding: 6px 4px env(safe-area-inset-bottom);
+    }
+    .nav button {
+      background: none; border: 0; color: var(--muted); font-size: .68rem; padding: 8px 2px;
+    }
+    .nav button.on { color: var(--accent); font-weight: 700; }
+    .page { display: none; }
+    .page.on { display: block; }
+    .row-hist {
+      border: 1px solid var(--line); border-radius: 10px; padding: 8px; margin-bottom: 8px; font-size: .8rem;
+    }
+    .row-hist .dt { color: var(--accent); font-weight: 700; }
+    .tag { display: inline-block; font-size: .68rem; padding: 2px 6px; border-radius: 6px; margin-right: 4px; background: #101820; }
+    .tag.up { color: var(--up); } .tag.dn { color: var(--down); }
+    .warn { color: var(--muted); font-size: .74rem; line-height: 1.45; }
+    table { width: 100%; border-collapse: collapse; font-size: .72rem; }
+    th, td { border-bottom: 1px solid var(--line); padding: 6px 4px; text-align: left; }
+  </style>
+</head>
+<body>
+  <h1>WIN Apoio</h1>
+  <p class="sub">PEX · checklist pré-market · padrões históricos · sem ordem automática</p>
+
+  <section id="p-pre" class="page on"></section>
+  <section id="p-hist" class="page"></section>
+  <section id="p-busca" class="page"></section>
+  <section id="p-pex" class="page"></section>
+
+  <nav class="nav">
+    <button class="on" data-p="p-pre">Pré</button>
+    <button data-p="p-hist">Histórico</button>
+    <button data-p="p-busca">Padrões</button>
+    <button data-p="p-pex">PEX</button>
+  </nav>
+
+<script>
+const ITENS = [
+  {id:"es", n:"S&P 500 (ES)"}, {id:"nq", n:"Nasdaq (NQ)"}, {id:"ym", n:"Dow (YM)"},
+  {id:"rty", n:"Russell (RTY)"}, {id:"vix", n:"VIX"}, {id:"dxy", n:"DXY"},
+  {id:"ewz", n:"EWZ"}, {id:"pbr", n:"PBR"}, {id:"vale", n:"VALE"},
+  {id:"itub", n:"ITUB"}, {id:"bbd", n:"BBD"}, {id:"usd", n:"USD/BRL"}
+];
+const SEED = [
+  {data:"2026-09-03", evento:"—", nq:null, dxy:null, score:null, hipo:"—", winD1:187940, winOpen:189480, gap:1540, gapTipo:"ALTA", c15:null, lado15:"N", winClose:187850, fill:"N", tipo:"RANGE", ac:"", notas:"início da série de gaps"},
+  {data:"2026-09-04", evento:"—", nq:null, dxy:null, score:null, hipo:"COLADO", winD1:187850, winOpen:187870, gap:20, gapTipo:"COLADO", c15:null, lado15:"N", winClose:187610, fill:"S", tipo:"BAIXA", ac:"", notas:"mín 185.520"},
+  {data:"2026-09-08", evento:"pós 07/09", nq:null, dxy:null, score:null, hipo:"GAP ALTA", winD1:187610, winOpen:190480, gap:2870, gapTipo:"ALTA", c15:null, lado15:"N", winClose:190060, fill:"N", tipo:"ALTA", ac:"", notas:"máx 191.930"},
+  {data:"2026-09-09", evento:"risco exterior", nq:null, dxy:null, score:-4, hipo:"GAP BAIXA", winD1:190060, winOpen:189550, gap:-510, gapTipo:"BAIXA", c15:null, lado15:"N", winClose:188500, fill:"N", tipo:"BAIXA", ac:"", notas:"piso 186.895"},
+  {data:"2026-09-10", evento:"NQ fraco", nq:-0.8, dxy:0.2, score:-5, hipo:"GAP BAIXA", winD1:188500, winOpen:187500, gap:-1000, gapTipo:"BAIXA", c15:186750, lado15:"V", winClose:190345, fill:"S", tipo:"VARREDURA", ac:"C", notas:"varreu 186.275 e devolveu — não vender o gap"},
+  {data:"2026-09-11", evento:"CPI EUA", nq:null, dxy:null, score:0, hipo:"COLADO", winD1:190345, winOpen:191060, gap:715, gapTipo:"ALTA", c15:null, lado15:"N", winClose:188600, fill:"S", tipo:"BAIXA", ac:"", notas:"ajuste 188.600"},
+  {data:"2026-09-14", evento:"NQ −1,8% DXY+", nq:-1.8, dxy:0.4, score:-6, hipo:"GAP BAIXA", winD1:188600, winOpen:186705, gap:-1895, gapTipo:"BAIXA", c15:null, lado15:"N", winClose:187515, fill:"N", tipo:"BAIXA", ac:"", notas:"Fed na semana; IBOV mín 183.813"},
+  {data:"2026-09-15", evento:"STF 10h", nq:-0.3, dxy:null, score:1, hipo:"COLADO / ALTA", winD1:187515, winOpen:187919, gap:404, gapTipo:"ALTA", c15:188085, lado15:"C", winClose:188505, fill:"N", tipo:"ALTA", ac:"C", notas:"filtro venda 186.70 morto"},
+  {data:"2026-09-16", evento:"Super Quarta Fed+Copom", nq:null, dxy:null, score:0, hipo:"COLADO", winD1:188505, winOpen:189320, gap:815, gapTipo:"ALTA", c15:null, lado15:"N", winClose:187600, fill:"S", tipo:"BAIXA", ac:"", notas:"Selic 13,75% · Fed alta · IBOV 185.548"},
+  {data:"2026-09-18", evento:"sexta / BoJ", nq:null, dxy:null, score:1, hipo:"COLADO / ALTA", winD1:187600, winOpen:188142, gap:542, gapTipo:"ALTA", c15:188130, lado15:"N", winClose:null, fill:"", tipo:"RANGE", ac:"C", notas:"1ª 15m doji 188.07–188.14 · sem lado"}
+];
+
+const scores = {};
+ITENS.forEach(i => scores[i.id] = 0);
+
+function loadDB() {
+  const raw = localStorage.getItem("win-sessoes");
+  if (raw) try { return JSON.parse(raw); } catch(e) {}
+  localStorage.setItem("win-sessoes", JSON.stringify(SEED));
+  return SEED.slice();
+}
+function saveDB(db) { localStorage.setItem("win-sessoes", JSON.stringify(db)); }
+
+function hipoDe(total, win) {
+  let hipo = "ABERTURA COLADA";
+  if (total <= -6) hipo = "GAP BAIXA";
+  else if (total <= -2) hipo = "COLADO / BAIXA";
+  else if (total <= 1) hipo = "ABERTURA COLADA";
+  else if (total <= 5) hipo = "COLADO / ALTA";
+  else hipo = "GAP ALTA";
+  let lo, hi;
+  if (hipo === "GAP BAIXA") { lo = win-800; hi = win-300; }
+  else if (hipo === "COLADO / BAIXA") { lo = win-400; hi = win-50; }
+  else if (hipo === "ABERTURA COLADA") { lo = win-200; hi = win+200; }
+  else if (hipo === "COLADO / ALTA") { lo = win-50; hi = win+400; }
+  else { lo = win+300; hi = win+800; }
+  return { hipo, lo, hi, total };
+}
+
+function renderPre() {
+  const el = document.getElementById("p-pre");
+  el.innerHTML = `
+    <div class="card">
+      <div class="sec">0 · REFERÊNCIA D-1</div>
+      <div class="grid2">
+        <div><label>IBOV close</label><input id="ibov" type="number" value="185548"></div>
+        <div><label>WIN close</label><input id="win" type="number" value="187600"></div>
+        <div><label>Selic a.a.</label><input id="selic" type="number" step="0.0001" value="0.1375"></div>
+        <div><label>Dias ao venc.</label><input id="dias" type="number" value="25"></div>
+      </div>
+      <div class="kpi">
+        <div>Basis WIN−IBOV<strong id="basis">—</strong></div>
+        <div>Carry n<strong id="carry">—</strong></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="sec">1–6 · SCORE −2 … +2</div>
+      <div id="itens"></div>
+    </div>
+    <div class="card">
+      <div class="sec">7 · HIPÓTESE DE GAP</div>
+      <div class="hypo"><b id="hipo">—</b><span id="faixa">—</span></div>
+      <label>Evento do dia</label>
+      <input id="evento" placeholder="Copom / Fed / STF / sexta / —">
+    </div>
+    <div class="card">
+      <div class="sec">8 · AO VIVO (depois das 9h)</div>
+      <div class="grid2">
+        <div><label>Close 1ª 15m</label><input id="c15" type="number"></div>
+        <div><label>Lado 15m</label>
+          <select id="lado15"><option value="N">N — sem lado</option><option value="C">C — compra</option><option value="V">V — venda</option></select>
+        </div>
+        <div><label>WIN abertura</label><input id="winOpen" type="number"></div>
+        <div><label>WIN close (fim)</label><input id="winClose" type="number"></div>
+      </div>
+      <div class="grid2">
+        <div><label>Tipo de dia</label>
+          <select id="tipo"><option>RANGE</option><option>ALTA</option><option>BAIXA</option><option>VARREDURA</option></select>
+        </div>
+        <div><label>A ou C</label>
+          <select id="ac"><option value="C">C — esperou close</option><option value="A">A — antecipou</option></select>
+        </div>
+      </div>
+      <label>Notas</label><textarea id="notas"></textarea>
+      <button class="primary" id="btnSaveDay">Gravar sessão no histórico</button>
+      <p class="warn">Filtro de lado = close da 1ª de 15m. 5m só depois de 90 segundos. 1 mini. Score não é ordem.</p>
+    </div>`;
+  const box = el.querySelector("#itens");
+  ITENS.forEach(it => {
+    const d = document.createElement("div");
+    d.style.marginBottom = "8px";
+    d.innerHTML = `<label>${it.n}</label><div class="score" data-id="${it.id}">
+      ${[-2,-1,0,1,2].map(n=>`<button data-v="${n}">${n>0?"+"+n:n}</button>`).join("")}</div>`;
+    box.appendChild(d);
+  });
+  box.addEventListener("click", e => {
+    const b = e.target.closest("button[data-v]"); if (!b) return;
+    const id = b.parentElement.dataset.id;
+    scores[id] = +b.dataset.v;
+    [...b.parentElement.children].forEach(x => x.className = "");
+    b.className = scores[id]>0 ? "on-plus" : scores[id]<0 ? "on-minus" : "on-zero";
+    calc();
+  });
+  ["ibov","win","selic","dias"].forEach(id => el.querySelector("#"+id).addEventListener("input", calc));
+  el.querySelector("#btnSaveDay").onclick = saveDay;
+  calc();
+}
+
+function calc() {
+  const ibov = +document.getElementById("ibov")?.value || 0;
+  const win = +document.getElementById("win")?.value || 0;
+  const selic = +document.getElementById("selic")?.value || 0;
+  const dias = +document.getElementById("dias")?.value || 0;
+  if (!document.getElementById("basis")) return;
+  document.getElementById("basis").textContent = Math.round(win-ibov).toLocaleString("pt-BR");
+  document.getElementById("carry").textContent = Math.round(ibov*selic*dias/365).toLocaleString("pt-BR");
+  const h = hipoDe(Object.values(scores).reduce((a,b)=>a+b,0), win);
+  document.getElementById("hipo").textContent = h.hipo + " · score " + h.total;
+  document.getElementById("faixa").textContent = "Faixa " + Math.round(h.lo).toLocaleString("pt-BR") + " a " + Math.round(h.hi).toLocaleString("pt-BR");
+}
+
+function saveDay() {
+  const win = +document.getElementById("win").value || 0;
+  const open = +document.getElementById("winOpen").value || 0;
+  const h = hipoDe(Object.values(scores).reduce((a,b)=>a+b,0), win);
+  const rec = {
+    data: new Date().toISOString().slice(0,10),
+    evento: document.getElementById("evento").value || "—",
+    nq: null, dxy: null, score: h.total, hipo: h.hipo,
+    winD1: win, winOpen: open || null,
+    gap: open && win ? open-win : null,
+    gapTipo: (open && win) ? (open-win >= 400 ? "ALTA" : open-win <= -400 ? "BAIXA" : "COLADO") : "COLADO",
+    c15: +document.getElementById("c15").value || null,
+    lado15: document.getElementById("lado15").value,
+    winClose: +document.getElementById("winClose").value || null,
+    fill: "", tipo: document.getElementById("tipo").value,
+    ac: document.getElementById("ac").value,
+    notas: document.getElementById("notas").value
+  };
+  const db = loadDB();
+  const i = db.findIndex(x => x.data === rec.data);
+  if (i >= 0) db[i] = Object.assign(db[i], rec);
+  else db.push(rec);
+  db.sort((a,b) => a.data < b.data ? 1 : -1);
+  saveDB(db);
+  alert("Sessão gravada. Veja Histórico.");
+  renderHist(); renderBusca();
+}
+
+function renderHist() {
+  const db = loadDB().slice().sort((a,b)=> a.data < b.data ? 1 : -1);
+  const el = document.getElementById("p-hist");
+  el.innerHTML = `<div class="card"><div class="sec">SESSÕES (${db.length})</div>
+    <p class="warn">Setembro/2026 já vem de exemplo. Importe mais no Padrões → ou grave o dia no Pré.</p></div>` +
+    db.map((r,idx) => `<div class="row-hist">
+      <span class="dt">${r.data}</span>
+      <span class="tag ${r.gapTipo==="BAIXA"?"dn":r.gapTipo==="ALTA"?"up":""}">${r.gapTipo||"—"}</span>
+      <span class="tag">${r.lado15||"N"}</span>
+      <span class="tag">${r.tipo||"—"}</span>
+      <div>${r.evento||""} · gap ${r.gap??"—"} · open ${r.winOpen??"—"} · close ${r.winClose??"—"}</div>
+      <div class="warn">${r.notas||""}</div>
+      <button class="danger" data-del="${r.data}">apagar</button>
+    </div>`).join("");
+  el.querySelectorAll("[data-del]").forEach(b => b.onclick = () => {
+    if (!confirm("Apagar "+b.dataset.del+"?")) return;
+    saveDB(loadDB().filter(x => x.data !== b.dataset.del));
+    renderHist(); renderBusca();
+  });
+}
+
+function renderBusca() {
+  const el = document.getElementById("p-busca");
+  el.innerHTML = `
+    <div class="card">
+      <div class="sec">DIAS COMO HOJE</div>
+      <label>Tipo de gap</label>
+      <select id="fGap"><option value="">todos</option><option>BAIXA</option><option>ALTA</option><option>COLADO</option></select>
+      <label>Lado da 1ª 15m</label>
+      <select id="fLado"><option value="">todos</option><option>C</option><option>V</option><option>N</option></select>
+      <button class="primary" id="btnBusca">Consultar frequência</button>
+      <div id="res"></div>
+    </div>
+    <div class="card">
+      <div class="sec">IMPORTAR CSV (5 anos)</div>
+      <p class="warn">Colunas: data,evento,nq,dxy,score,hipo,winD1,winOpen,gap,gapTipo,c15,lado15,winClose,fill,tipo,ac,notas</p>
+      <input type="file" id="csv" accept=".csv,text/csv">
+      <button class="ghost" id="btnReset">Restaurar amostra setembro/2026</button>
+    </div>`;
+  el.querySelector("#btnBusca").onclick = runBusca;
+  el.querySelector("#fGap").onchange = runBusca;
+  el.querySelector("#fLado").onchange = runBusca;
+  el.querySelector("#btnReset").onclick = () => { saveDB(SEED); renderHist(); runBusca(); };
+  el.querySelector("#csv").onchange = e => {
+    const f = e.target.files[0]; if (!f) return;
+    const rd = new FileReader();
+    rd.onload = () => {
+      const lines = String(rd.result).split(/\r?\n/).filter(Boolean);
+      const head = lines.shift().split(",").map(s=>s.trim());
+      const extra = lines.map(line => {
+        const p = line.split(",");
+        const o = {};
+        head.forEach((h,i)=> o[h] = p[i]);
+        o.gap = o.gap ? +o.gap : null;
+        o.score = o.score ? +o.score : null;
+        return o;
+      });
+      saveDB(loadDB().concat(extra));
+      renderHist(); runBusca();
+      alert(extra.length + " linhas importadas.");
+    };
+    rd.readAsText(f);
+  };
+  runBusca();
+}
+
+function runBusca() {
+  const gap = document.getElementById("fGap")?.value || "";
+  const lado = document.getElementById("fLado")?.value || "";
+  let db = loadDB();
+  if (gap) db = db.filter(x => x.gapTipo === gap);
+  if (lado) db = db.filter(x => x.lado15 === lado);
+  const n = db.length;
+  const fillS = db.filter(x => x.fill === "S").length;
+  const tipoCount = {};
+  db.forEach(x => { tipoCount[x.tipo||"?"] = (tipoCount[x.tipo||"?"]||0)+1; });
+  const box = document.getElementById("res");
+  if (!box) return;
+  box.innerHTML = `
+    <div class="kpi" style="margin-top:10px">
+      <div>N (dias)<strong>${n}</strong></div>
+      <div>Preencheu gap<strong>${n?Math.round(100*fillS/n):0}% (${fillS})</strong></div>
+    </div>
+    <p class="warn" style="margin-top:8px">Probabilidade = contagem / N. Amostra &lt; 20 = estudo, não estatística.</p>
+    <table><thead><tr><th>Tipo de dia</th><th>Qtd</th><th>%</th></tr></thead>
+    <tbody>${Object.entries(tipoCount).map(([k,v])=>`<tr><td>${k}</td><td>${v}</td><td>${n?Math.round(100*v/n):0}%</td></tr>`).join("")}</tbody></table>
+    <table style="margin-top:8px"><thead><tr><th>Data</th><th>Gap</th><th>15m</th><th>Tipo</th></tr></thead>
+    <tbody>${db.slice(0,12).map(r=>`<tr><td>${r.data}</td><td>${r.gapTipo}</td><td>${r.lado15||"—"}</td><td>${r.tipo||"—"}</td></tr>`).join("")}</tbody></table>`;
+}
+
+function renderPex() {
+  document.getElementById("p-pex").innerHTML = `
+    <div class="card">
+      <div class="sec">PROJETO DE EXTENSÃO</div>
+      <p><b>Sistema de apoio à decisão para mini índice (WIN)</b>, sem execução automática.</p>
+      <p class="warn">Consolida checklist pré-market, registra a sessão e consulta frequência histórica de padrões semelhantes (tipo de gap + 1ª vela de 15 minutos).</p>
+    </div>
+    <div class="card">
+      <div class="sec">MÉTODO</div>
+      <p class="warn">1. Score −2 a +2 em ES, NQ, Dow, Russell, VIX, DXY, EWZ, ADRs e USD/BRL.<br>
+      2. Hipótese de gap por faixa de score.<br>
+      3. Filtro operacional: close da 1ª vela de 15m (não o pavio).<br>
+      4. Gatilho no 5m após 90 segundos.<br>
+      5. Histórico: uma linha por pregão. Consulta = mesmo gapTipo e/ou mesmo lado 15m.</p>
+    </div>
+    <div class="card">
+      <div class="sec">LIMITAÇÕES (escrever no relatório)</div>
+      <p class="warn">• Não prevê o mercado; mostra frequência na amostra.<br>
+      • Setembro/2026 é semente (N pequeno). Cinco anos entram por CSV.<br>
+      • Sem série de 15m no arquivo antigo, o campo lado15 fica N.<br>
+      • Regime muda (Selic, eleição). Não misturar 2020 com 2026 sem filtro.<br>
+      • Uso pessoal / sem fins lucrativos. Não envia ordem à corretora.</p>
+    </div>
+    <div class="card">
+      <div class="sec">COMO INSTALAR NO ANDROID</div>
+      <p class="warn">Chrome → ⋮ → Adicionar à tela inicial. Precisa de HTTPS (GitHub Pages).</p>
+    </div>`;
+}
+
+renderPre(); renderHist(); renderBusca(); renderPex();
+
+document.querySelectorAll(".nav button").forEach(b => {
+  b.onclick = () => {
+    document.querySelectorAll(".nav button").forEach(x => x.classList.remove("on"));
+    document.querySelectorAll(".page").forEach(x => x.classList.remove("on"));
+    b.classList.add("on");
+    document.getElementById(b.dataset.p).classList.add("on");
+  };
+});
+
+if ("serviceWorker" in navigator) navigator.serviceWorker.register("./sw.js");
+</script>
+</body>
+</html>

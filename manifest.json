@@ -1,0 +1,19 @@
+{
+  "name": "Pré-Market WIN",
+  "short_name": "WIN Pré",
+  "description": "Checklist pré-market para probabilidade de gap no mini índice",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0f1720",
+  "theme_color": "#1b2a4a",
+  "lang": "pt-BR",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

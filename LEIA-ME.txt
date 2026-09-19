@@ -1,0 +1,36 @@
+PRÉ-MARKET WIN — app no Android
+================================
+
+CAMINHO 1 (hoje, sem Play Store)
+1. Copie a pasta premarket-win-app para o celular
+   ou hospede os arquivos (GitHub Pages / Netlify / qualquer HTTPS).
+2. Abra index.html no Chrome Android.
+   Se for arquivo local, o "Adicionar à tela inicial" pode falhar —
+   por isso o ideal é um link https://.
+3. Chrome → menu ⋮ → Adicionar à tela inicial.
+4. O ícone "WIN Pré" abre como app (tela cheia).
+5. Preencha scores −2…+2. A hipótese de gap e a faixa calculam sozinhas.
+6. Salvar no celular guarda o último plano (localStorage).
+
+O app NÃO busca cotação sozinho neste MVP.
+Você cola o % do Investing/Finviz (8 min) — o mesmo do caderno.
+Cotação automática é o passo 2 (API), não o passo 1.
+
+CAMINHO 2 (app nativo Java/Kotlin)
+- Android Studio → projeto Empty Activity (Kotlin ou Java).
+- Uma Activity = esta mesma tela.
+- Dados: OkHttp + Yahoo chart API (não oficial) ou valores digitados.
+- NÃO ligue corretora / Profit / MetaTrader.
+- Score e faixa: as mesmas regras da planilha.
+
+Regras de score (resumo)
+Futuros EUA %: ≥+0,5 +2 | +0,2 a +0,5 +1 | −0,2 a +0,2 0 | −0,8 a −0,2 −1 | ≤−0,8 −2
+DXY / USD-BRL: sinal INVERSO (dólar sobe = score negativo para WIN)
+VIX: nível, não só %  (≤15 +1 | 15–20 0 | 20–25 −1 | ≥25 −2)
+Total ≥+6 gap alta | +2..+5 colado/alta | −1..+1 colado | −5..−2 colado/baixa | ≤−6 gap baixa
+
+Filtro operacional (não muda no app)
+1ª vela de 15m = lado
+90 segundos
+5m = gatilho
+1 mini
