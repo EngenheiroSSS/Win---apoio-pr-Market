@@ -151,7 +151,8 @@ function renderPre() {
       </div>
     </div>
     <div class="card">
-      <div class="sec">1–6 · SCORE −2 … +2</div>
+      <div class="sec">1–6 · VAR % (Investing/Finviz) + SCORE</div>
+      <p class="warn">Digite a variação % do pré-market. O score preenche sozinho. DXY e USD/BRL já entram invertidos (dólar sobe = ruim para o WIN).</p>
       <div id="itens"></div>
     </div>
     <div class="card">
@@ -183,19 +184,49 @@ function renderPre() {
       <p class="warn">Filtro de lado = close da 1ª de 15m. 5m só depois de 90 segundos. 1 mini. Score não é ordem.</p>
     </div>`;
   const box = el.querySelector("#itens");
+  function scoreFromPct(id, pct) {
+    if (pct === "" || pct === null || Number.isNaN(+pct)) return 0;
+    let p = +pct;
+    if (id === "dxy" || id === "usd") p = -p;
+    if (id === "vix") {
+      if (p <= 15) return 1;
+      if (p < 20) return 0;
+      if (p < 25) return -1;
+      return -2;
+    }
+    if (p >= 0.5) return 2;
+    if (p >= 0.2) return 1;
+    if (p > -0.2) return 0;
+    if (p > -0.8) return -1;
+    return -2;
+  }
+  function paintScore(id, val) {
+    scores[id] = val;
+    const bar = box.querySelector('.score[data-id="'+id+'"]');
+    if (!bar) return;
+    [...bar.children].forEach(x => {
+      x.className = "";
+      if (+x.dataset.v === val) x.className = val>0 ? "on-plus" : val<0 ? "on-minus" : "on-zero";
+    });
+  }
   ITENS.forEach(it => {
     const d = document.createElement("div");
-    d.style.marginBottom = "8px";
-    d.innerHTML = `<label>${it.n}</label><div class="score" data-id="${it.id}">
-      ${[-2,-1,0,1,2].map(n=>`<button data-v="${n}">${n>0?"+"+n:n}</button>`).join("")}</div>`;
+    d.style.marginBottom = "10px";
+    d.innerHTML = `<label>${it.n}</label>
+      <input type="number" step="0.01" inputmode="decimal" placeholder="ex. -0.35 ou 0.50" data-pct="${it.id}">
+      <div class="score" data-id="${it.id}">
+      ${[-2,-1,0,1,2].map(n=>`<button type="button" data-v="${n}">${n>0?"+"+n:n}</button>`).join("")}</div>`;
     box.appendChild(d);
+  });
+  box.addEventListener("input", e => {
+    const inp = e.target.closest("input[data-pct]");
+    if (!inp) return;
+    paintScore(inp.dataset.pct, scoreFromPct(inp.dataset.pct, inp.value));
+    calc();
   });
   box.addEventListener("click", e => {
     const b = e.target.closest("button[data-v]"); if (!b) return;
-    const id = b.parentElement.dataset.id;
-    scores[id] = +b.dataset.v;
-    [...b.parentElement.children].forEach(x => x.className = "");
-    b.className = scores[id]>0 ? "on-plus" : scores[id]<0 ? "on-minus" : "on-zero";
+    paintScore(b.parentElement.dataset.id, +b.dataset.v);
     calc();
   });
   ["ibov","win","selic","dias"].forEach(id => el.querySelector("#"+id).addEventListener("input", calc));
