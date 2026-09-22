@@ -28,6 +28,11 @@
       border: 1px solid var(--line); border-radius: 8px; padding: 10px; font-size: 16px;
     }
     textarea { min-height: 72px; }
+    .pctrow { display: grid; grid-template-columns: 1fr 48px; gap: 6px; align-items: center; }
+    .minus {
+      height: 44px; border: 1px solid var(--line); border-radius: 8px;
+      background: #3a1820; color: var(--down); font-size: 22px; font-weight: 700;
+    }
     .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
     .kpi { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
     .kpi div, .stat {
@@ -213,7 +218,10 @@ function renderPre() {
     const d = document.createElement("div");
     d.style.marginBottom = "10px";
     d.innerHTML = `<label>${it.n}</label>
-      <input type="number" step="0.01" inputmode="decimal" placeholder="ex. -0.35 ou 0.50" data-pct="${it.id}">
+      <div class="pctrow">
+        <input type="text" inputmode="decimal" enterkeyhint="next" placeholder="ex. -0.35" data-pct="${it.id}" autocomplete="off">
+        <button type="button" class="minus" data-neg="${it.id}">−</button>
+      </div>
       <div class="score" data-id="${it.id}">
       ${[-2,-1,0,1,2].map(n=>`<button type="button" data-v="${n}">${n>0?"+"+n:n}</button>`).join("")}</div>`;
     box.appendChild(d);
@@ -221,10 +229,23 @@ function renderPre() {
   box.addEventListener("input", e => {
     const inp = e.target.closest("input[data-pct]");
     if (!inp) return;
+    inp.value = String(inp.value).replace(",", ".");
     paintScore(inp.dataset.pct, scoreFromPct(inp.dataset.pct, inp.value));
     calc();
   });
   box.addEventListener("click", e => {
+    const neg = e.target.closest("button[data-neg]");
+    if (neg) {
+      const inp = box.querySelector('input[data-pct="'+neg.dataset.neg+'"]');
+      if (inp) {
+        const v = String(inp.value || "").replace(",", ".");
+        if (!v || v === "-") inp.value = "-";
+        else inp.value = v.startsWith("-") ? v.slice(1) : "-" + v;
+        paintScore(inp.dataset.pct, scoreFromPct(inp.dataset.pct, inp.value));
+        calc();
+      }
+      return;
+    }
     const b = e.target.closest("button[data-v]"); if (!b) return;
     paintScore(b.parentElement.dataset.id, +b.dataset.v);
     calc();
