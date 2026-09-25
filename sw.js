@@ -1,4 +1,4 @@
-const CACHE = "win-premarket-v1";
+const CACHE = "win-premarket-v2";
 const ASSETS = ["./index.html", "./manifest.json", "./icon.svg"];
 
 self.addEventListener("install", (e) => {
