@@ -5,428 +5,349 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#1b2a4a" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
-  <title>WIN Apoio — PEX</title>
+  <title>WIN Apoio</title>
   <link rel="manifest" href="./manifest.json" />
   <link rel="icon" href="./icon.svg" />
   <style>
     :root {
-      --bg: #0f1720; --card: #182230; --line: #2a3b50; --text: #e8eef6;
-      --muted: #8aa0b8; --accent: #f4d35e; --up: #3dd68c; --down: #ff6b7a;
+      --bg:#0f1720; --card:#182230; --line:#2a3b50; --text:#e8eef6;
+      --muted:#8aa0b8; --accent:#f4d35e; --up:#3dd68c; --down:#ff6b7a; --orange:#e09a4a;
     }
     * { box-sizing: border-box; }
-    body {
-      margin: 0; font-family: system-ui, Segoe UI, Roboto, Arial, sans-serif;
-      background: var(--bg); color: var(--text); padding: 12px 12px 88px;
-    }
-    h1 { font-size: 1.1rem; margin: 0 0 2px; }
-    .sub { color: var(--muted); font-size: .75rem; margin: 0 0 12px; }
-    .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 12px; margin-bottom: 10px; }
-    .sec { font-size: .7rem; letter-spacing: .08em; color: var(--accent); font-weight: 700; margin-bottom: 8px; }
-    label { display: block; font-size: .76rem; color: var(--muted); margin: 8px 0 4px; }
-    input, select, textarea {
-      width: 100%; background: #101820; color: var(--text);
-      border: 1px solid var(--line); border-radius: 8px; padding: 10px; font-size: 16px;
-    }
-    textarea { min-height: 72px; }
-    .pctrow { display: grid; grid-template-columns: 1fr 48px; gap: 6px; align-items: center; }
-    .minus {
-      height: 44px; border: 1px solid var(--line); border-radius: 8px;
-      background: #3a1820; color: var(--down); font-size: 22px; font-weight: 700;
-    }
-    .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-    .kpi { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
-    .kpi div, .stat {
-      background: #101820; border-radius: 8px; padding: 8px; font-size: .75rem; color: var(--muted);
-    }
-    .kpi strong, .stat b { display: block; color: var(--text); font-size: 1rem; }
-    .hypo { text-align: center; padding: 14px 8px; border-radius: 12px; border: 1px solid var(--accent); background: #1c2838; }
-    .hypo b { display: block; font-size: 1.05rem; color: var(--accent); margin-bottom: 4px; }
-    button.primary, button.ghost {
-      width: 100%; border: 0; border-radius: 10px; padding: 12px; font-weight: 700; font-size: 15px; margin-top: 8px;
-    }
-    button.primary { background: var(--accent); color: #1a1400; }
-    button.ghost { background: #101820; color: var(--text); border: 1px solid var(--line); }
-    button.danger { background: #3a1820; color: var(--down); border: 1px solid #633; width: auto; padding: 6px 10px; font-size: 12px; margin: 0; }
-    .score { display: flex; gap: 4px; }
-    .score button {
-      flex: 1; background: #101820; color: var(--muted); border: 1px solid var(--line);
-      border-radius: 8px; padding: 8px 0; font-size: 13px;
-    }
-    .score button.on-plus { background: #163226; color: var(--up); border-color: #2a6; }
-    .score button.on-minus { background: #32161c; color: var(--down); border-color: #a35; }
-    .score button.on-zero { background: #2a2a20; color: var(--accent); }
-    .nav {
-      position: fixed; left: 0; right: 0; bottom: 0; display: grid; grid-template-columns: repeat(4, 1fr);
-      background: #121c28; border-top: 1px solid var(--line); padding: 6px 4px env(safe-area-inset-bottom);
-    }
-    .nav button {
-      background: none; border: 0; color: var(--muted); font-size: .68rem; padding: 8px 2px;
-    }
-    .nav button.on { color: var(--accent); font-weight: 700; }
-    .page { display: none; }
-    .page.on { display: block; }
-    .row-hist {
-      border: 1px solid var(--line); border-radius: 10px; padding: 8px; margin-bottom: 8px; font-size: .8rem;
-    }
-    .row-hist .dt { color: var(--accent); font-weight: 700; }
-    .tag { display: inline-block; font-size: .68rem; padding: 2px 6px; border-radius: 6px; margin-right: 4px; background: #101820; }
-    .tag.up { color: var(--up); } .tag.dn { color: var(--down); }
-    .warn { color: var(--muted); font-size: .74rem; line-height: 1.45; }
-    table { width: 100%; border-collapse: collapse; font-size: .72rem; }
-    th, td { border-bottom: 1px solid var(--line); padding: 6px 4px; text-align: left; }
+    body { margin:0; font-family:system-ui,Segoe UI,Roboto,Arial,sans-serif; background:var(--bg); color:var(--text); padding:12px 12px 88px; }
+    h1 { font-size:1.1rem; margin:0 0 2px; }
+    .sub { color:var(--muted); font-size:.75rem; margin:0 0 12px; }
+    .card { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:12px; margin-bottom:10px; }
+    .sec { font-size:.7rem; letter-spacing:.08em; color:var(--accent); font-weight:700; margin-bottom:8px; }
+    .sec.night { color:var(--orange); }
+    label { display:block; font-size:.76rem; color:var(--muted); margin:8px 0 4px; }
+    input, select, textarea { width:100%; background:#101820; color:var(--text); border:1px solid var(--line); border-radius:8px; padding:10px; font-size:16px; }
+    textarea { min-height:64px; }
+    .pctrow { display:grid; grid-template-columns:1fr 48px; gap:6px; align-items:center; }
+    .minus { height:44px; border:1px solid var(--line); border-radius:8px; background:#3a1820; color:var(--down); font-size:22px; font-weight:700; }
+    .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+    .kpi { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:8px; }
+    .kpi div { background:#101820; border-radius:8px; padding:8px; font-size:.75rem; color:var(--muted); }
+    .kpi strong { display:block; color:var(--text); font-size:1rem; }
+    .hypo { text-align:center; padding:14px 8px; border-radius:12px; border:1px solid var(--accent); background:#1c2838; }
+    .hypo b { display:block; font-size:1.15rem; color:var(--accent); margin-bottom:4px; }
+    button.primary, button.ghost { width:100%; border:0; border-radius:10px; padding:12px; font-weight:700; font-size:15px; margin-top:8px; }
+    button.primary { background:var(--accent); color:#1a1400; }
+    button.ghost { background:#101820; color:var(--text); border:1px solid var(--line); }
+    button.danger { background:#3a1820; color:var(--down); border:1px solid #633; width:auto; padding:6px 10px; font-size:12px; margin:0; }
+    .nav { position:fixed; left:0; right:0; bottom:0; display:grid; grid-template-columns:repeat(4,1fr); background:#121c28; border-top:1px solid var(--line); padding:6px 4px env(safe-area-inset-bottom); }
+    .nav button { background:none; border:0; color:var(--muted); font-size:.68rem; padding:8px 2px; }
+    .nav button.on { color:var(--accent); font-weight:700; }
+    .page { display:none; } .page.on { display:block; }
+    .row-hist { border:1px solid var(--line); border-radius:10px; padding:8px; margin-bottom:8px; font-size:.8rem; }
+    .row-hist .dt { color:var(--accent); font-weight:700; }
+    .tag { display:inline-block; font-size:.68rem; padding:2px 6px; border-radius:6px; margin-right:4px; background:#101820; }
+    .tag.up { color:var(--up); } .tag.dn { color:var(--down); } .tag.ok { color:var(--accent); }
+    .warn { color:var(--muted); font-size:.74rem; line-height:1.45; }
+    table { width:100%; border-collapse:collapse; font-size:.72rem; }
+    th, td { border-bottom:1px solid var(--line); padding:6px 4px; text-align:left; }
   </style>
 </head>
 <body>
   <h1>WIN Apoio</h1>
-  <p class="sub">PEX · checklist pré-market · padrões históricos · sem ordem automática</p>
-
+  <p class="sub">Caderno 18/09 · score ponderado · manhã grava sem o close</p>
   <section id="p-pre" class="page on"></section>
   <section id="p-hist" class="page"></section>
   <section id="p-busca" class="page"></section>
   <section id="p-pex" class="page"></section>
-
   <nav class="nav">
-    <button class="on" data-p="p-pre">Pré</button>
-    <button data-p="p-hist">Histórico</button>
+    <button class="on" data-p="p-pre">Hoje</button>
+    <button data-p="p-hist">Mês</button>
     <button data-p="p-busca">Padrões</button>
     <button data-p="p-pex">PEX</button>
   </nav>
-
 <script>
-const ITENS = [
-  {id:"es", n:"S&P 500 (ES)"}, {id:"nq", n:"Nasdaq (NQ)"}, {id:"ym", n:"Dow (YM)"},
-  {id:"rty", n:"Russell (RTY)"}, {id:"vix", n:"VIX"}, {id:"dxy", n:"DXY"},
-  {id:"ewz", n:"EWZ"}, {id:"pbr", n:"PBR"}, {id:"vale", n:"VALE"},
-  {id:"bbd", n:"BBD"}, {id:"usd", n:"USD/BRL"}
+const KEY = "win-sessoes-v2";
+const FIELDS = [
+  {id:"spx", n:"1. S&P 500 %"},
+  {id:"ndx", n:"1. Nasdaq 100 %"},
+  {id:"djia", n:"1. DJIA %"},
+  {id:"rut", n:"1. Russell 2000 %"},
+  {id:"vixp", n:"2. VIX variação %"},
+  {id:"dxy", n:"3. DXY %"},
+  {id:"ewz", n:"4. EWZ % · prioridade"},
+  {id:"pbr", n:"5. PBR %"},
+  {id:"vale", n:"5. VALE %"},
+  {id:"usd", n:"6. USD/BRL %"}
 ];
+
+/* frações iguais à planilha (0.0044 = 0,44%) */
 const SEED = [
-  {data:"2026-09-03", evento:"—", nq:null, dxy:null, score:null, hipo:"—", winD1:187940, winOpen:189480, gap:1540, gapTipo:"ALTA", c15:null, lado15:"N", winClose:187850, fill:"N", tipo:"RANGE", ac:"", notas:"início da série de gaps"},
-  {data:"2026-09-04", evento:"—", nq:null, dxy:null, score:null, hipo:"COLADO", winD1:187850, winOpen:187870, gap:20, gapTipo:"COLADO", c15:null, lado15:"N", winClose:187610, fill:"S", tipo:"BAIXA", ac:"", notas:"mín 185.520"},
-  {data:"2026-09-08", evento:"pós 07/09", nq:null, dxy:null, score:null, hipo:"GAP ALTA", winD1:187610, winOpen:190480, gap:2870, gapTipo:"ALTA", c15:null, lado15:"N", winClose:190060, fill:"N", tipo:"ALTA", ac:"", notas:"máx 191.930"},
-  {data:"2026-09-09", evento:"risco exterior", nq:null, dxy:null, score:-4, hipo:"GAP BAIXA", winD1:190060, winOpen:189550, gap:-510, gapTipo:"BAIXA", c15:null, lado15:"N", winClose:188500, fill:"N", tipo:"BAIXA", ac:"", notas:"piso 186.895"},
-  {data:"2026-09-10", evento:"NQ fraco", nq:-0.8, dxy:0.2, score:-5, hipo:"GAP BAIXA", winD1:188500, winOpen:187500, gap:-1000, gapTipo:"BAIXA", c15:186750, lado15:"V", winClose:190345, fill:"S", tipo:"VARREDURA", ac:"C", notas:"varreu 186.275 e devolveu — não vender o gap"},
-  {data:"2026-09-11", evento:"CPI EUA", nq:null, dxy:null, score:0, hipo:"COLADO", winD1:190345, winOpen:191060, gap:715, gapTipo:"ALTA", c15:null, lado15:"N", winClose:188600, fill:"S", tipo:"BAIXA", ac:"", notas:"ajuste 188.600"},
-  {data:"2026-09-14", evento:"NQ −1,8% DXY+", nq:-1.8, dxy:0.4, score:-6, hipo:"GAP BAIXA", winD1:188600, winOpen:186705, gap:-1895, gapTipo:"BAIXA", c15:null, lado15:"N", winClose:187515, fill:"N", tipo:"BAIXA", ac:"", notas:"Fed na semana; IBOV mín 183.813"},
-  {data:"2026-09-15", evento:"STF 10h", nq:-0.3, dxy:null, score:1, hipo:"COLADO / ALTA", winD1:187515, winOpen:187919, gap:404, gapTipo:"ALTA", c15:188085, lado15:"C", winClose:188505, fill:"N", tipo:"ALTA", ac:"C", notas:"filtro venda 186.70 morto"},
-  {data:"2026-09-16", evento:"Super Quarta Fed+Copom", nq:null, dxy:null, score:0, hipo:"COLADO", winD1:188505, winOpen:189320, gap:815, gapTipo:"ALTA", c15:null, lado15:"N", winClose:187600, fill:"S", tipo:"BAIXA", ac:"", notas:"Selic 13,75% · Fed alta · IBOV 185.548"},
-  {data:"2026-09-18", evento:"sexta / BoJ", nq:null, dxy:null, score:1, hipo:"COLADO / ALTA", winD1:187600, winOpen:188142, gap:542, gapTipo:"ALTA", c15:188130, lado15:"N", winClose:null, fill:"", tipo:"RANGE", ac:"C", notas:"1ª 15m doji 188.07–188.14 · sem lado"}
+  {data:"2026-09-01",spx:-0.003,ndx:-0.004,djia:-0.0035,rut:-0.004,vix:14.92,vixp:0.0283,dxy:-0.0027,ewz:0.015,pbr:0.0443,vale:0.004,usd:-0.0014,usdN:5.156,winD1:180208,winOpen:179390,winClose:182233,hipo:"GAP↓",notas:"Sessão EUA 31/08"},
+  {data:"2026-09-02",spx:-0.0073,ndx:-0.0129,djia:-0.006,rut:-0.008,vix:16.34,vixp:0.0952,dxy:0.0025,ewz:0.015,pbr:0.0506,vale:0.002,usd:-0.0062,usdN:5.156,winD1:182233,winOpen:182050,winClose:187951,hipo:"GAP→"},
+  {data:"2026-09-03",spx:0.0044,ndx:0.0023,djia:0.003,rut:0.002,vix:15.2,vixp:-0.0698,dxy:-0.0008,ewz:0.0416,pbr:0.0261,vale:0.0403,usd:-0.0123,usdN:5.091,winD1:187951,winOpen:189480,winClose:187706,hipo:"GAP↑"},
+  {data:"2026-09-04",spx:0.0102,ndx:0.0116,djia:0.008,rut:0.007,vix:14.32,vixp:-0.0579,dxy:-0.0069,ewz:0.0011,pbr:-0.0168,vale:-0.0267,usd:0.0035,usdN:5.108,winD1:187706,winOpen:187870,winClose:187410,hipo:"GAP→"},
+  {data:"2026-09-08",spx:-0.0042,ndx:-0.0012,djia:-0.003,rut:-0.004,vix:14.53,vixp:0,dxy:0.0027,ewz:-0.0071,pbr:-0.019,vale:-0.0026,usd:0.0039,usdN:5.128,winD1:187410,winOpen:190480,winClose:189835,hipo:"GAP↑",notas:"Pós 07/09 B3 + Labor Day"},
+  {data:"2026-09-09",spx:-0.0054,ndx:-0.0041,djia:-0.005,rut:-0.006,vix:15.72,vixp:0.0819,dxy:-0.0039,ewz:0.0198,pbr:0.0353,vale:0.019,usd:-0.0084,usdN:5.086,winD1:189835,winOpen:189550,winClose:188016,hipo:"GAP→"},
+  {data:"2026-09-10",spx:-0.0048,ndx:-0.0029,djia:-0.004,rut:-0.005,vix:16.46,vixp:0.0471,dxy:-0.0003,ewz:-0.014,pbr:0.0048,vale:-0.0077,usd:0.0046,usdN:5.108,winD1:188016,winOpen:187500,winClose:190412,hipo:"GAP↓",notas:"varredura 186.275"},
+  {data:"2026-09-11",spx:-0.0059,ndx:-0.0108,djia:-0.006,rut:-0.007,vix:17.84,vixp:0.0838,dxy:0.0023,ewz:0.0129,pbr:0.0215,vale:-0.0104,usd:-0.0006,usdN:5.106,winD1:190412,winOpen:191060,winClose:188987,hipo:"GAP→",notas:"CPI"},
+  {data:"2026-09-14",spx:0.008,ndx:0.0091,djia:0.006,rut:0.005,vix:15.84,vixp:-0.1121,dxy:0.0027,ewz:-0.0096,pbr:-0.0084,vale:-0.0033,usd:0.0031,usdN:5.122,winD1:188987,winOpen:186900,winClose:187507,hipo:"GAP↓",notas:"NQ feio no pré da semana; Fed"},
+  {data:"2026-09-15",spx:0.0043,ndx:-0.0082,djia:0.002,rut:0.001,vix:17.1,vixp:0.0795,dxy:0.0027,ewz:-0.0123,pbr:-0.0024,vale:-0.0407,usd:0.0057,usdN:5.143,winD1:187507,winOpen:186910,winClose:188393,hipo:"GAP↓"},
+  {data:"2026-09-16",spx:-0.0045,ndx:-0.0065,djia:-0.0063,rut:-0.005,vix:17.2,vixp:0.0058,dxy:0.0023,ewz:0.0016,pbr:0.0293,vale:-0.0096,usd:0.0002,usdN:5.144,winD1:188393,winOpen:189320,winClose:187236,hipo:"GAP→",notas:"Super Quarta Fed+Copom"},
+  {data:"2026-09-17",spx:-0.0045,ndx:0.0002,djia:-0.0121,rut:-0.008,vix:17.71,vixp:0.0297,dxy:0.0063,ewz:-0.0079,pbr:0.001,vale:-0.0096,usd:0.0017,usdN:5.153,winD1:187236,winOpen:188810,winClose:187733,hipo:"GAP↑"},
+  {data:"2026-09-18",spx:0.0016,ndx:0.004,djia:-0.0019,rut:0,vix:14.81,vixp:-0.0408,dxy:-0.0004,ewz:-0.0041,pbr:0,vale:0,usd:0.0011,usdN:5.13,winD1:187733,winOpen:187905,winClose:187135,hipo:"GAP→",notas:"ajuste 186745 · sexta"},
+  {data:"2026-09-21",spx:0.0016,ndx:0.004,djia:-0.0019,rut:0,vix:14.81,vixp:0,dxy:-0.0004,ewz:-0.0041,pbr:0,vale:0,usd:0.0011,usdN:5.13,winD1:186745,winOpen:187980,winClose:187845,hipo:"GAP↑",notas:"Focus · gap +1235 · IBOV +0,74%"}
 ];
 
-const scores = {};
-ITENS.forEach(i => scores[i.id] = 0);
+function pctIn(v){ if(v===""||v==null||isNaN(+v)) return 0; return +v/100; }
+function pctOut(f){ if(f==null||f==="") return ""; return +(f*100).toFixed(3); }
+function num(id){ const el=document.getElementById(id); return el? +String(el.value).replace(",",".") : 0; }
+function txt(id){ const el=document.getElementById(id); return el? el.value : ""; }
 
-function loadDB() {
-  const raw = localStorage.getItem("win-sessoes");
-  if (raw) try { return JSON.parse(raw); } catch(e) {}
-  localStorage.setItem("win-sessoes", JSON.stringify(SEED));
-  return SEED.slice();
+function scoreOf(r){
+  return (r.spx||0)+(r.ndx||0)+(r.djia||0)+(r.rut||0)
+    +1.5*(r.ewz||0)+(r.pbr||0)+(r.vale||0)
+    -1.2*(r.dxy||0)-1.2*(r.usd||0)-0.4*(r.vixp||0);
 }
-function saveDB(db) { localStorage.setItem("win-sessoes", JSON.stringify(db)); }
-
-function hipoDe(total, win) {
-  let hipo = "ABERTURA COLADA";
-  if (total <= -6) hipo = "GAP BAIXA";
-  else if (total <= -2) hipo = "COLADO / BAIXA";
-  else if (total <= 1) hipo = "ABERTURA COLADA";
-  else if (total <= 5) hipo = "COLADO / ALTA";
-  else hipo = "GAP ALTA";
-  let lo, hi;
-  if (hipo === "GAP BAIXA") { lo = win-800; hi = win-300; }
-  else if (hipo === "COLADO / BAIXA") { lo = win-400; hi = win-50; }
-  else if (hipo === "ABERTURA COLADA") { lo = win-200; hi = win+200; }
-  else if (hipo === "COLADO / ALTA") { lo = win-50; hi = win+400; }
-  else { lo = win+300; hi = win+800; }
-  return { hipo, lo, hi, total };
+function sugestao(sc){
+  if(sc>=0.08) return "GAP↑";
+  if(sc<=-0.08) return "GAP↓";
+  return "GAP→";
+}
+function dirReal(gap){
+  if(gap==null||gap==="") return "";
+  if(gap>150) return "↑";
+  if(gap<-150) return "↓";
+  return "→";
+}
+function acerto(hipo, gap){
+  if(!hipo || gap==null || gap==="") return "";
+  const abs = Math.abs(gap);
+  if(hipo==="GAP→") return abs<400 ? "SIM" : "NÃO";
+  if(hipo==="GAP↑") return gap>150 ? "SIM" : "NÃO";
+  if(hipo==="GAP↓") return gap<-150 ? "SIM" : "NÃO";
+  return "";
+}
+function enrich(r){
+  const gap = (r.winOpen&&r.winD1) ? r.winOpen-r.winD1 : null;
+  r.gap = gap;
+  r.score = +scoreOf(r).toFixed(5);
+  r.dir = dirReal(gap);
+  r.acerto = acerto(r.hipo, gap);
+  r.status = r.winClose ? "DIA FECHADO" : "MANHÃ GRAVADA";
+  return r;
 }
 
-function renderPre() {
+function loadDB(){
+  const raw = localStorage.getItem(KEY);
+  if(raw){ try { return JSON.parse(raw).map(enrich); } catch(e){} }
+  const db = SEED.map(x => enrich({...x}));
+  localStorage.setItem(KEY, JSON.stringify(db));
+  return db;
+}
+function saveDB(db){ localStorage.setItem(KEY, JSON.stringify(db.map(enrich))); }
+
+function readMorning(){
+  const r = {
+    data: txt("data") || new Date().toISOString().slice(0,10),
+    spx:pctIn(num("spx")), ndx:pctIn(num("ndx")), djia:pctIn(num("djia")), rut:pctIn(num("rut")),
+    vix:num("vix")||null, vixp:pctIn(num("vixp")),
+    dxy:pctIn(num("dxy")), ewz:pctIn(num("ewz")), pbr:pctIn(num("pbr")), vale:pctIn(num("vale")),
+    usd:pctIn(num("usd")), usdN:num("usdN")||null,
+    winD1:num("winD1")||null, winOpen:num("winOpen")||null, winClose:num("winClose")||null,
+    hipo: txt("hipoMan"), notas: txt("notas"),
+    res5: txt("res5"), pts: txt("pts"), minis: txt("minis")
+  };
+  if(!r.hipo) r.hipo = sugestao(scoreOf(r));
+  return enrich(r);
+}
+
+function calc(){
+  const r = readMorning();
+  const win = r.winD1||0;
+  const sc = r.score;
+  const hip = sugestao(sc);
+  const faixa = hip==="GAP↓" ? (win-800)+" a "+(win-200)
+    : hip==="GAP↑" ? (win+200)+" a "+(win+800)
+    : (win-200)+" a "+(win+200);
+  const h = document.getElementById("hipoBox");
+  if(!h) return;
+  h.innerHTML = "<b>"+hip+" · score "+sc+"</b>Faixa "+faixa;
+  const sel = document.getElementById("hipoMan");
+  if(sel && !sel.dataset.touched) sel.value = hip;
+}
+
+function renderPre(){
   const el = document.getElementById("p-pre");
+  const today = new Date().toISOString().slice(0,10);
   el.innerHTML = `
     <div class="card">
-      <div class="sec">0 · REFERÊNCIA D-1</div>
+      <div class="sec">MANHÃ — salva agora (Ctrl não precisa; use o botão)</div>
       <div class="grid2">
-        <div><label>IBOV close</label><input id="ibov" type="number" value="185548"></div>
-        <div><label>WIN close</label><input id="win" type="number" value="187600"></div>
-        <div><label>Selic a.a.</label><input id="selic" type="number" step="0.0001" value="0.1375"></div>
-        <div><label>Dias ao venc.</label><input id="dias" type="number" value="25"></div>
-      </div>
-      <div class="kpi">
-        <div>Basis WIN−IBOV<strong id="basis">—</strong></div>
-        <div>Carry n<strong id="carry">—</strong></div>
+        <div><label>Data B3</label><input id="data" type="date" value="${today}"></div>
+        <div><label>WIN prev close (ajuste)</label><input id="winD1" inputmode="numeric" placeholder="186745"></div>
       </div>
     </div>
     <div class="card">
-      <div class="sec">1–6 · VAR % (Investing/Finviz) + SCORE</div>
-      <p class="warn">Digite a variação % do pré-market. O score preenche sozinho. DXY e USD/BRL já entram invertidos (dólar sobe = ruim para o WIN).</p>
+      <div class="sec">1–6 · % COMO NO INVESTING (0,44 e não 0,0044)</div>
+      <p class="warn">Toque <b>−</b> se o teclado do celular não tiver sinal. DXY e USD já entram negativos no score.</p>
       <div id="itens"></div>
+      <div class="grid2">
+        <div><label>2. VIX nível</label><input id="vix" inputmode="decimal" placeholder="14.81"></div>
+        <div><label>6. USD/BRL nível</label><input id="usdN" inputmode="decimal" placeholder="5.13"></div>
+      </div>
     </div>
     <div class="card">
-      <div class="sec">7 · HIPÓTESE DE GAP</div>
-      <div class="hypo"><b id="hipo">—</b><span id="faixa">—</span></div>
-      <label>Evento do dia</label>
-      <input id="evento" placeholder="Copom / Fed / STF / sexta / —">
+      <div class="sec">7 · HIPÓTESE — antes do leilão</div>
+      <div class="hypo" id="hipoBox"><b>—</b></div>
+      <label>Hipótese (pode trocar a sugestão)</label>
+      <select id="hipoMan"><option>GAP↑</option><option>GAP→</option><option>GAP↓</option></select>
+      <label>Evento / notas da manhã</label>
+      <input id="notas" placeholder="Focus / Fed / sexta / —">
+      <button class="primary" id="btnManha">Gravar MANHÃ no mês</button>
+      <p class="warn">A manhã não some se você não voltar. Status = MANHÃ GRAVADA até ter o close.</p>
     </div>
     <div class="card">
-      <div class="sec">8 · AO VIVO (depois das 9h)</div>
+      <div class="sec night">NOITE — 4 campos. Pode ficar vazio.</div>
       <div class="grid2">
-        <div><label>Close 1ª 15m</label><input id="c15" type="number"></div>
-        <div><label>Lado 15m</label>
-          <select id="lado15"><option value="N">N — sem lado</option><option value="C">C — compra</option><option value="V">V — venda</option></select>
-        </div>
-        <div><label>WIN abertura</label><input id="winOpen" type="number"></div>
-        <div><label>WIN close (fim)</label><input id="winClose" type="number"></div>
+        <div><label>WIN abertura 09:01</label><input id="winOpen" inputmode="numeric"></div>
+        <div><label>WIN fechamento</label><input id="winClose" inputmode="numeric"></div>
       </div>
+      <label>8. 1º 5m / resultado (só depois do close da 15m)</label>
+      <input id="res5" placeholder="lado C/V · entrada · saída">
       <div class="grid2">
-        <div><label>Tipo de dia</label>
-          <select id="tipo"><option>RANGE</option><option>ALTA</option><option>BAIXA</option><option>VARREDURA</option></select>
-        </div>
-        <div><label>A ou C</label>
-          <select id="ac"><option value="C">C — esperou close</option><option value="A">A — antecipou</option></select>
-        </div>
+        <div><label>Pts scalp</label><input id="pts" inputmode="numeric"></div>
+        <div><label>Nº minis</label><input id="minis" inputmode="numeric" value="1"></div>
       </div>
-      <label>Notas</label><textarea id="notas"></textarea>
-      <button class="primary" id="btnSaveDay">Gravar sessão no histórico</button>
-      <p class="warn">Filtro de lado = close da 1ª de 15m. 5m só depois de 90 segundos. 1 mini. Score não é ordem.</p>
+      <button class="ghost" id="btnNoite">Completar NOITE na mesma data</button>
     </div>`;
   const box = el.querySelector("#itens");
-  function scoreFromPct(id, pct) {
-    if (pct === "" || pct === null || Number.isNaN(+pct)) return 0;
-    let p = +pct;
-    if (id === "dxy" || id === "usd") p = -p;
-    if (id === "vix") {
-      if (p <= 15) return 1;
-      if (p < 20) return 0;
-      if (p < 25) return -1;
-      return -2;
-    }
-    if (p >= 0.5) return 2;
-    if (p >= 0.2) return 1;
-    if (p > -0.2) return 0;
-    if (p > -0.8) return -1;
-    return -2;
-  }
-  function paintScore(id, val) {
-    scores[id] = val;
-    const bar = box.querySelector('.score[data-id="'+id+'"]');
-    if (!bar) return;
-    [...bar.children].forEach(x => {
-      x.className = "";
-      if (+x.dataset.v === val) x.className = val>0 ? "on-plus" : val<0 ? "on-minus" : "on-zero";
-    });
-  }
-  ITENS.forEach(it => {
+  FIELDS.forEach(it => {
     const d = document.createElement("div");
-    d.style.marginBottom = "10px";
     d.innerHTML = `<label>${it.n}</label>
       <div class="pctrow">
-        <input type="text" inputmode="decimal" enterkeyhint="next" placeholder="ex. -0.35" data-pct="${it.id}" autocomplete="off">
+        <input type="text" inputmode="decimal" placeholder="ex. -0.35" data-pct="${it.id}" id="${it.id}" autocomplete="off">
         <button type="button" class="minus" data-neg="${it.id}">−</button>
-      </div>
-      <div class="score" data-id="${it.id}">
-      ${[-2,-1,0,1,2].map(n=>`<button type="button" data-v="${n}">${n>0?"+"+n:n}</button>`).join("")}</div>`;
+      </div>`;
     box.appendChild(d);
   });
   box.addEventListener("input", e => {
-    const inp = e.target.closest("input[data-pct]");
-    if (!inp) return;
-    inp.value = String(inp.value).replace(",", ".");
-    paintScore(inp.dataset.pct, scoreFromPct(inp.dataset.pct, inp.value));
+    const inp = e.target.closest("input"); if(!inp) return;
+    inp.value = String(inp.value).replace(",",".");
     calc();
   });
   box.addEventListener("click", e => {
-    const neg = e.target.closest("button[data-neg]");
-    if (neg) {
-      const inp = box.querySelector('input[data-pct="'+neg.dataset.neg+'"]');
-      if (inp) {
-        const v = String(inp.value || "").replace(",", ".");
-        if (!v || v === "-") inp.value = "-";
-        else inp.value = v.startsWith("-") ? v.slice(1) : "-" + v;
-        paintScore(inp.dataset.pct, scoreFromPct(inp.dataset.pct, inp.value));
-        calc();
-      }
-      return;
-    }
-    const b = e.target.closest("button[data-v]"); if (!b) return;
-    paintScore(b.parentElement.dataset.id, +b.dataset.v);
+    const neg = e.target.closest("[data-neg]"); if(!neg) return;
+    const inp = document.getElementById(neg.dataset.neg);
+    if(!inp) return;
+    const v = String(inp.value||"").replace(",",".");
+    inp.value = (!v||v==="-") ? "-" : (v.startsWith("-") ? v.slice(1) : "-"+v);
     calc();
   });
-  ["ibov","win","selic","dias"].forEach(id => el.querySelector("#"+id).addEventListener("input", calc));
-  el.querySelector("#btnSaveDay").onclick = saveDay;
+  ["winD1","vix","usdN"].forEach(id => el.querySelector("#"+id).addEventListener("input", calc));
+  el.querySelector("#hipoMan").addEventListener("change", () => { el.querySelector("#hipoMan").dataset.touched="1"; });
+  el.querySelector("#btnManha").onclick = () => upsert(readMorning(), false);
+  el.querySelector("#btnNoite").onclick = () => upsert(readMorning(), true);
   calc();
 }
 
-function calc() {
-  const ibov = +document.getElementById("ibov")?.value || 0;
-  const win = +document.getElementById("win")?.value || 0;
-  const selic = +document.getElementById("selic")?.value || 0;
-  const dias = +document.getElementById("dias")?.value || 0;
-  if (!document.getElementById("basis")) return;
-  document.getElementById("basis").textContent = Math.round(win-ibov).toLocaleString("pt-BR");
-  document.getElementById("carry").textContent = Math.round(ibov*selic*dias/365).toLocaleString("pt-BR");
-  const h = hipoDe(Object.values(scores).reduce((a,b)=>a+b,0), win);
-  document.getElementById("hipo").textContent = h.hipo + " · score " + h.total;
-  document.getElementById("faixa").textContent = "Faixa " + Math.round(h.lo).toLocaleString("pt-BR") + " a " + Math.round(h.hi).toLocaleString("pt-BR");
-}
-
-function saveDay() {
-  const win = +document.getElementById("win").value || 0;
-  const open = +document.getElementById("winOpen").value || 0;
-  const h = hipoDe(Object.values(scores).reduce((a,b)=>a+b,0), win);
-  const rec = {
-    data: new Date().toISOString().slice(0,10),
-    evento: document.getElementById("evento").value || "—",
-    nq: null, dxy: null, score: h.total, hipo: h.hipo,
-    winD1: win, winOpen: open || null,
-    gap: open && win ? open-win : null,
-    gapTipo: (open && win) ? (open-win >= 400 ? "ALTA" : open-win <= -400 ? "BAIXA" : "COLADO") : "COLADO",
-    c15: +document.getElementById("c15").value || null,
-    lado15: document.getElementById("lado15").value,
-    winClose: +document.getElementById("winClose").value || null,
-    fill: "", tipo: document.getElementById("tipo").value,
-    ac: document.getElementById("ac").value,
-    notas: document.getElementById("notas").value
-  };
+function upsert(rec, night){
   const db = loadDB();
   const i = db.findIndex(x => x.data === rec.data);
-  if (i >= 0) db[i] = Object.assign(db[i], rec);
-  else db.push(rec);
-  db.sort((a,b) => a.data < b.data ? 1 : -1);
+  if(i>=0){
+    if(!night){
+      const keep = {winClose: db[i].winClose, res5: db[i].res5, pts: db[i].pts, minis: db[i].minis, winOpen: db[i].winOpen};
+      db[i] = enrich(Object.assign(keep, rec, {winClose: keep.winClose, res5: rec.res5||keep.res5, pts: rec.pts||keep.pts, winOpen: rec.winOpen||keep.winOpen}));
+    } else {
+      db[i] = enrich(Object.assign(db[i], {
+        winOpen: rec.winOpen||db[i].winOpen,
+        winClose: rec.winClose||db[i].winClose,
+        res5: rec.res5||db[i].res5,
+        pts: rec.pts||db[i].pts,
+        minis: rec.minis||db[i].minis,
+        notas: rec.notas||db[i].notas
+      }));
+    }
+  } else db.push(rec);
+  db.sort((a,b)=> a.data<b.data?1:-1);
   saveDB(db);
-  alert("Sessão gravada. Veja Histórico.");
+  alert(night ? "Noite gravada." : "Manhã gravada no mês. Status: "+(rec.winClose?"DIA FECHADO":"MANHÃ GRAVADA"));
   renderHist(); renderBusca();
 }
 
-function renderHist() {
-  const db = loadDB().slice().sort((a,b)=> a.data < b.data ? 1 : -1);
+function renderHist(){
+  const db = loadDB().slice().sort((a,b)=> a.data<b.data?1:-1);
   const el = document.getElementById("p-hist");
-  el.innerHTML = `<div class="card"><div class="sec">SESSÕES (${db.length})</div>
-    <p class="warn">Setembro/2026 já vem de exemplo. Importe mais no Padrões → ou grave o dia no Pré.</p></div>` +
-    db.map((r,idx) => `<div class="row-hist">
+  const n = db.length;
+  const ok = db.filter(x=>x.acerto==="SIM").length;
+  const withGap = db.filter(x=>x.gap!=null);
+  el.innerHTML = `<div class="card"><div class="sec">SET/OUT · ${n} linhas</div>
+    <div class="kpi"><div>Acertos<strong>${ok}/${withGap.filter(x=>x.hipo).length}</strong></div>
+    <div>Manhã sem close<strong>${db.filter(x=>!x.winClose).length}</strong></div></div>
+    <p class="warn">Azul da planilha = manhã. Laranja = noite. Não apague linha sem close.</p></div>` +
+    db.map(r => `<div class="row-hist">
       <span class="dt">${r.data}</span>
-      <span class="tag ${r.gapTipo==="BAIXA"?"dn":r.gapTipo==="ALTA"?"up":""}">${r.gapTipo||"—"}</span>
-      <span class="tag">${r.lado15||"N"}</span>
-      <span class="tag">${r.tipo||"—"}</span>
-      <div>${r.evento||""} · gap ${r.gap??"—"} · open ${r.winOpen??"—"} · close ${r.winClose??"—"}</div>
-      <div class="warn">${r.notas||""}</div>
+      <span class="tag ${r.hipo==="GAP↑"?"up":r.hipo==="GAP↓"?"dn":""}">${r.hipo||"—"}</span>
+      <span class="tag">${r.dir||"—"}</span>
+      <span class="tag ${r.acerto==="SIM"?"ok":""}">${r.acerto||r.status}</span>
+      <div>score ${r.score} · prev ${r.winD1||"—"} · open ${r.winOpen||"—"} · gap ${r.gap??"—"} · close ${r.winClose||"—"}</div>
+      <div class="warn">${r.notas||""} ${r.res5||""}</div>
       <button class="danger" data-del="${r.data}">apagar</button>
     </div>`).join("");
   el.querySelectorAll("[data-del]").forEach(b => b.onclick = () => {
-    if (!confirm("Apagar "+b.dataset.del+"?")) return;
-    saveDB(loadDB().filter(x => x.data !== b.dataset.del));
+    if(!confirm("Apagar "+b.dataset.del+"?")) return;
+    saveDB(loadDB().filter(x=>x.data!==b.dataset.del));
     renderHist(); renderBusca();
   });
 }
 
-function renderBusca() {
+function renderBusca(){
   const el = document.getElementById("p-busca");
-  el.innerHTML = `
-    <div class="card">
-      <div class="sec">DIAS COMO HOJE</div>
-      <label>Tipo de gap</label>
-      <select id="fGap"><option value="">todos</option><option>BAIXA</option><option>ALTA</option><option>COLADO</option></select>
-      <label>Lado da 1ª 15m</label>
-      <select id="fLado"><option value="">todos</option><option>C</option><option>V</option><option>N</option></select>
-      <button class="primary" id="btnBusca">Consultar frequência</button>
-      <div id="res"></div>
-    </div>
-    <div class="card">
-      <div class="sec">IMPORTAR CSV (5 anos)</div>
-      <p class="warn">Colunas: data,evento,nq,dxy,score,hipo,winD1,winOpen,gap,gapTipo,c15,lado15,winClose,fill,tipo,ac,notas</p>
-      <input type="file" id="csv" accept=".csv,text/csv">
-      <button class="ghost" id="btnReset">Restaurar amostra setembro/2026</button>
-    </div>`;
-  el.querySelector("#btnBusca").onclick = runBusca;
-  el.querySelector("#fGap").onchange = runBusca;
-  el.querySelector("#fLado").onchange = runBusca;
-  el.querySelector("#btnReset").onclick = () => { saveDB(SEED); renderHist(); runBusca(); };
-  el.querySelector("#csv").onchange = e => {
-    const f = e.target.files[0]; if (!f) return;
-    const rd = new FileReader();
-    rd.onload = () => {
-      const lines = String(rd.result).split(/\r?\n/).filter(Boolean);
-      const head = lines.shift().split(",").map(s=>s.trim());
-      const extra = lines.map(line => {
-        const p = line.split(",");
-        const o = {};
-        head.forEach((h,i)=> o[h] = p[i]);
-        o.gap = o.gap ? +o.gap : null;
-        o.score = o.score ? +o.score : null;
-        return o;
-      });
-      saveDB(loadDB().concat(extra));
-      renderHist(); runBusca();
-      alert(extra.length + " linhas importadas.");
-    };
-    rd.readAsText(f);
+  el.innerHTML = `<div class="card">
+    <div class="sec">DIAS COMO HOJE</div>
+    <label>Hipótese / gap real</label>
+    <select id="fHipo"><option value="">todos</option><option>GAP↑</option><option>GAP↓</option><option>GAP→</option></select>
+    <button class="primary" id="btnB">Consultar</button>
+    <div id="res"></div>
+  </div>
+  <div class="card">
+    <div class="sec">RESET / IMPORTAR</div>
+    <button class="ghost" id="btnReset">Restaurar SET 01–21/09 da planilha</button>
+    <p class="warn">Score = SPX+NDX+DJIA+RUT + 1,5×EWZ + PBR + VALE − 1,2×DXY − 1,2×USD − 0,4×ΔVIX.<br>
+    Sugestão: ≥ +0,08 GAP↑ · ≤ −0,08 GAP↓ · senão GAP→.<br>
+    Acerto: ↑ se gap&gt;+150 · ↓ se gap&lt;−150 · → se |gap|&lt;400.</p>
+  </div>`;
+  const run = () => {
+    const f = document.getElementById("fHipo").value;
+    let db = loadDB();
+    if(f) db = db.filter(x => x.hipo===f || x.dir===(f==="GAP↑"?"↑":f==="GAP↓"?"↓":"→"));
+    const n = db.length;
+    const fill = db.filter(x => x.acerto==="SIM").length;
+    document.getElementById("res").innerHTML = `
+      <div class="kpi"><div>N<strong>${n}</strong></div><div>Acerto hipótese<strong>${n?Math.round(100*fill/n):0}%</strong></div></div>
+      <table><thead><tr><th>Data</th><th>Hipo</th><th>Gap</th><th>Acerto</th></tr></thead>
+      <tbody>${db.slice(0,16).map(r=>`<tr><td>${r.data}</td><td>${r.hipo}</td><td>${r.gap??"—"}</td><td>${r.acerto||"—"}</td></tr>`).join("")}</tbody></table>`;
   };
-  runBusca();
+  el.querySelector("#btnB").onclick = run;
+  el.querySelector("#fHipo").onchange = run;
+  el.querySelector("#btnReset").onclick = () => { localStorage.setItem(KEY, JSON.stringify(SEED)); renderHist(); run(); };
+  run();
 }
 
-function runBusca() {
-  const gap = document.getElementById("fGap")?.value || "";
-  const lado = document.getElementById("fLado")?.value || "";
-  let db = loadDB();
-  if (gap) db = db.filter(x => x.gapTipo === gap);
-  if (lado) db = db.filter(x => x.lado15 === lado);
-  const n = db.length;
-  const fillS = db.filter(x => x.fill === "S").length;
-  const tipoCount = {};
-  db.forEach(x => { tipoCount[x.tipo||"?"] = (tipoCount[x.tipo||"?"]||0)+1; });
-  const box = document.getElementById("res");
-  if (!box) return;
-  box.innerHTML = `
-    <div class="kpi" style="margin-top:10px">
-      <div>N (dias)<strong>${n}</strong></div>
-      <div>Preencheu gap<strong>${n?Math.round(100*fillS/n):0}% (${fillS})</strong></div>
-    </div>
-    <p class="warn" style="margin-top:8px">Probabilidade = contagem / N. Amostra &lt; 20 = estudo, não estatística.</p>
-    <table><thead><tr><th>Tipo de dia</th><th>Qtd</th><th>%</th></tr></thead>
-    <tbody>${Object.entries(tipoCount).map(([k,v])=>`<tr><td>${k}</td><td>${v}</td><td>${n?Math.round(100*v/n):0}%</td></tr>`).join("")}</tbody></table>
-    <table style="margin-top:8px"><thead><tr><th>Data</th><th>Gap</th><th>15m</th><th>Tipo</th></tr></thead>
-    <tbody>${db.slice(0,12).map(r=>`<tr><td>${r.data}</td><td>${r.gapTipo}</td><td>${r.lado15||"—"}</td><td>${r.tipo||"—"}</td></tr>`).join("")}</tbody></table>`;
-}
-
-function renderPex() {
-  document.getElementById("p-pex").innerHTML = `
-    <div class="card">
-      <div class="sec">PROJETO DE EXTENSÃO</div>
-      <p><b>Sistema de apoio à decisão para mini índice (WIN)</b>, sem execução automática.</p>
-      <p class="warn">Consolida checklist pré-market, registra a sessão e consulta frequência histórica de padrões semelhantes (tipo de gap + 1ª vela de 15 minutos).</p>
-    </div>
-    <div class="card">
-      <div class="sec">MÉTODO</div>
-      <p class="warn">1. Score −2 a +2 em ES, NQ, Dow, Russell, VIX, DXY, EWZ, ADRs e USD/BRL.<br>
-      2. Hipótese de gap por faixa de score.<br>
-      3. Filtro operacional: close da 1ª vela de 15m (não o pavio).<br>
-      4. Gatilho no 5m após 90 segundos.<br>
-      5. Histórico: uma linha por pregão. Consulta = mesmo gapTipo e/ou mesmo lado 15m.</p>
-    </div>
-    <div class="card">
-      <div class="sec">LIMITAÇÕES (escrever no relatório)</div>
-      <p class="warn">• Não prevê o mercado; mostra frequência na amostra.<br>
-      • Setembro/2026 é semente (N pequeno). Cinco anos entram por CSV.<br>
-      • Sem série de 15m no arquivo antigo, o campo lado15 fica N.<br>
-      • Regime muda (Selic, eleição). Não misturar 2020 com 2026 sem filtro.<br>
-      • Uso pessoal / sem fins lucrativos. Não envia ordem à corretora.</p>
-    </div>
-    <div class="card">
-      <div class="sec">COMO INSTALAR NO ANDROID</div>
-      <p class="warn">Chrome → ⋮ → Adicionar à tela inicial. Precisa de HTTPS (GitHub Pages).</p>
-    </div>`;
+function renderPex(){
+  document.getElementById("p-pex").innerHTML = `<div class="card">
+    <div class="sec">MODELO DO CADERNO</div>
+    <p class="warn">Sistema de apoio à decisão para mini índice (WIN), sem execução automática: checklist pré-market, registro da sessão e frequência histórica de padrões (gap + 1ª vela de 15m).</p>
+    <p class="warn">3 camadas: HOJE (esta aba) → linha do MÊS → noite laranja. Folha de hoje não é o arquivo final.</p>
+    <p class="warn">Filtro = close da 1ª de 15m. 5m só depois. 1 mini. Score não é ordem.</p>
+  </div>`;
 }
 
 renderPre(); renderHist(); renderBusca(); renderPex();
-
 document.querySelectorAll(".nav button").forEach(b => {
   b.onclick = () => {
-    document.querySelectorAll(".nav button").forEach(x => x.classList.remove("on"));
-    document.querySelectorAll(".page").forEach(x => x.classList.remove("on"));
+    document.querySelectorAll(".nav button").forEach(x=>x.classList.remove("on"));
+    document.querySelectorAll(".page").forEach(x=>x.classList.remove("on"));
     b.classList.add("on");
     document.getElementById(b.dataset.p).classList.add("on");
   };
 });
-
-if ("serviceWorker" in navigator) navigator.serviceWorker.register("./sw.js");
+if("serviceWorker" in navigator) navigator.serviceWorker.register("./sw.js");
 </script>
 </body>
 </html>
